@@ -1,2 +1,2 @@
-# rtt_ov2640
-ov2640 driver for rt-thread
+# rtt_soft_sccb
+A software SCCB library for rt-thread
