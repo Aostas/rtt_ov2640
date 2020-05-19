@@ -4,6 +4,23 @@
 #include <rtthread.h>
 #include <rtdevice.h>
 
+#define CAM_JPEG_Mode           1
+#define CAM_RGB565_Mode         2
+#define CAM_Auto_Exposure       3
+#define CAM_Light_Mode          4
+#define CAM_Color_Saturation    5
+#define CAM_Brightness          6
+#define CAM_Contrast            7
+#define CAM_Special_Effects     8
+#define CAM_Color_Bar           9
+#define CAM_Window_Set          10
+#define CAM_OutSize_Set         11
+#define CAM_ImageWin_Set        12
+#define CAM_ImageSize_Set       13
+
+
+
+
 #define OV2640_ADDR_DEFAULT 0X30
 
 #define OV2640_MID              0X7FA2
@@ -93,14 +110,22 @@
 #define OV2640_SENSOR_HISTO_LOW  0x61
 #define OV2640_SENSOR_HISTO_HIGH 0x62
 
-struct ov2640_device
-{
-    struct rt_i2c_bus_device *bus;
-    rt_uint8_t i2c_addr;
+struct cam_ops{
+    rt_err_t (*hal_init)(void);
+    void (*write_reg)(rt_uint8_t addr,rt_uint8_t val);
+    rt_uint8_t (*read_reg)(rt_uint8_t addr);
+    void (*reset_pin_write)(rt_uint8_t val);
+    void (*pwdn_pin_write)(rt_uint8_t val);
+    void (*hw_delayms)(rt_uint32_t ms);
 };
-typedef struct ov2640_device *ov2640_device_t;
-void ov2640_write_reg(ov2640_device_t dev, rt_uint8_t reg_addr,rt_uint8_t *data);
-rt_uint8_t ov2640_read_reg(ov2640_device_t dev, rt_uint8_t reg_addr);
-ov2640_device_t ov2640_hw_init(const char *dev_name, rt_uint8_t sccb_addr);
+
+struct cam_device
+{
+    struct rt_device parent;
+    struct rt_semaphore cam_lock;
+    struct cam_ops *ops;
+};
+typedef struct cam_device *cam_device_t;
+rt_err_t cam_hw_init(struct cam_ops *ops);
 
 #endif

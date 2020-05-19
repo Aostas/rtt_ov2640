@@ -41,8 +41,10 @@ DEPENDS = ["PKG_USING_OV2640"]
 #
 # LINKFLAGS: Link options
 #---------------------------------------------------------------------------------
+
 SOURCES          = ["src/ov2640.c"]
-SOURCES          += ["example/ov2640_stm32_port.c"]
+if GetDepend(['OV2640_USING_EXAMPLE']):
+	SOURCES          += ["example/ov2640_stm32_port.c"]
 
 LOCAL_CPPPATH    = [] 
 LOCAL_CCFLAGS    = "" 
